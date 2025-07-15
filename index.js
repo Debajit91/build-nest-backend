@@ -1,24 +1,35 @@
 const express = require("express");
 const cors = require("cors");
-const { connectToDatabase } = require("./db/connect");
+const { MongoClient } = require("mongodb");
+const dotenv = require("dotenv");
+const createCouponRouter = require("./routes/coupons");
 
-require("dotenv").config();
+dotenv.config();
 
-const userRoutes = require('./routes/users');
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
 app.use(express.json());
-app.use('/api/users', userRoutes);
 
-// Your routes
-app.get("/", (req, res) => {
-  res.send("Build Nest Server is Running");
-});
+const uri = process.env.DB_URI;
+const client = new MongoClient(uri);
 
-// Connect to DB, then start server
-const port = process.env.PORT || 5000;
-connectToDatabase().then(() => {
-  app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
-  });
-});
+async function start() {
+  try {
+    await client.connect();
+    const db = client.db("buildNest");
+
+  
+    app.use("/coupons", createCouponRouter(db));
+
+    app.listen(5000, () => {
+      console.log("Server running at http://localhost:5000");
+    });
+  } catch (err) {
+    console.error("MongoDB connection failed", err);
+  }
+}
+
+start();

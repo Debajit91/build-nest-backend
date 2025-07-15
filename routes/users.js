@@ -1,9 +1,9 @@
 const express = require("express");
-const router = express.Router();
+const app = express.Router();
 const { getDB } = require("../db/connect");
 
 // GET all users
-router.get("/", async (req, res) => {
+app.get("/", async (req, res) => {
   try {
     const db = getDB();
     const users = await db.collection("users").find().toArray();
@@ -13,4 +13,4 @@ router.get("/", async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = app;
