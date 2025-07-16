@@ -3,6 +3,7 @@ const cors = require("cors");
 const { MongoClient } = require("mongodb");
 const dotenv = require("dotenv");
 const createCouponRouter = require("./routes/coupons");
+const createUserRouter = require("./routes/users");
 
 dotenv.config();
 
@@ -21,8 +22,11 @@ async function start() {
     await client.connect();
     const db = client.db("buildNest");
 
-  
+    
     app.use("/coupons", createCouponRouter(db));
+
+    
+    app.use("/users", createUserRouter(db));
 
     app.listen(5000, () => {
       console.log("Server running at http://localhost:5000");
