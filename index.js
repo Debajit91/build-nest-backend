@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const createCouponRouter = require("./routes/coupons");
 const createUserRouter = require("./routes/users");
 const createApartmentRouter = require("./routes/apartments");
+const createAgreementRouter = require("./routes/agreements");
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ async function start() {
   try {
     await client.connect();
     const db = client.db("buildNest");
+    app.locals.db = db;
 
     // routes
     app.use("/coupons", createCouponRouter(db));
@@ -32,6 +34,8 @@ async function start() {
     app.use("/users", createUserRouter(db));
 
     app.use('/apartments', createApartmentRouter(db));
+
+    app.use('/agreements', createAgreementRouter(db));
 
     app.listen(5000, () => {
       console.log(`Server running on port ${port}`);
