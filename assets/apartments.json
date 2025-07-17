@@ -5,7 +5,7 @@
     "block": "A",
     "apartmentNo": "A-101",
     "rent": 15000,
-    "hasAgreement": false
+    "hasAgreement": true
   },
   {
     "image": "https://i.ibb.co/3mLrsqCd/2.jpg",
