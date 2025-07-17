@@ -1,0 +1,122 @@
+[
+  {
+    "image": "https://i.ibb.co/YFgv6CC3/1.jpg",
+    "floor": 1,
+    "block": "A",
+    "apartmentNo": "A-101",
+    "rent": 15000,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/3mLrsqCd/2.jpg",
+    "floor": 1,
+    "block": "A",
+    "apartmentNo": "A-102",
+    "rent": 15500,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/XkSB1Mf8/3.jpg",
+    "floor": 2,
+    "block": "A",
+    "apartmentNo": "A-201",
+    "rent": 16000,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/qY2h973w/4.jpg",
+    "floor": 2,
+    "block": "B",
+    "apartmentNo": "B-202",
+    "rent": 16500,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/8npZK40x/5.jpg",
+    "floor": 3,
+    "block": "B",
+    "apartmentNo": "B-301",
+    "rent": 17000,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/jCM3JWG/6.jpg",
+    "floor": 3,
+    "block": "C",
+    "apartmentNo": "C-302",
+    "rent": 17500,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/8DBz1zHt/7.jpg",
+    "floor": 4,
+    "block": "C",
+    "apartmentNo": "C-401",
+    "rent": 18000,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/Lz70s3dk/8.jpg",
+    "floor": 4,
+    "block": "D",
+    "apartmentNo": "D-402",
+    "rent": 18500,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/m54xX1Y5/9.jpg",
+    "floor": 5,
+    "block": "D",
+    "apartmentNo": "D-501",
+    "rent": 19000,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/W4175SZc/10.jpg",
+    "floor": 5,
+    "block": "E",
+    "apartmentNo": "E-502",
+    "rent": 19500,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/rjcttt0/11.jpg",
+    "floor": 6,
+    "block": "E",
+    "apartmentNo": "E-601",
+    "rent": 20000,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/cS37J5bV/12.jpg",
+    "floor": 6,
+    "block": "F",
+    "apartmentNo": "F-602",
+    "rent": 20500,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/F4kfMKGk/13.jpg",
+    "floor": 7,
+    "block": "F",
+    "apartmentNo": "F-701",
+    "rent": 21000,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/Lhn2ZwKW/14.jpg",
+    "floor": 7,
+    "block": "G",
+    "apartmentNo": "G-702",
+    "rent": 21500,
+    "hasAgreement": false
+  },
+  {
+    "image": "https://i.ibb.co/fdXvNtft/15.jpg",
+    "floor": 8,
+    "block": "G",
+    "apartmentNo": "G-801",
+    "rent": 22000,
+    "hasAgreement": false
+  }
+]
