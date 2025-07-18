@@ -37,6 +37,9 @@ async function start() {
 
     app.use('/agreements', createAgreementRouter(db));
 
+    app.use("/api", require("./routes/payments"));
+
+
     app.listen(5000, () => {
       console.log(`Server running on port ${port}`);
     });

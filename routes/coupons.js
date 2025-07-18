@@ -17,17 +17,29 @@ const createCouponRouter = (db) => {
   // POST a new coupon
   app.post("/", async (req, res) => {
     try {
-      const { code, discount, description } = req.body;
+      const { code, discount, description, expiresAt } = req.body;
       const result = await db.collection("coupons").insertOne({
         code,
         discount: parseFloat(discount),
         description,
         createdAt: new Date(),
+        ...(expiresAt && {expiresAt: new Date(expiresAt)})
       });
       res.send(result);
     } catch (err) {
       res.status(500).send({ error: "Failed to add coupon" });
     }
+  });
+
+  app.post("/validate-coupon", async (req, res) => {
+    const { code } = req.body;
+    const coupon = await db.collection("coupons").findOne({ code });
+
+    if (!coupon || coupon.expiresAt < new Date()) {
+      return res.json({ valid: false });
+    }
+
+    return res.json({ valid: true, discount: coupon.discount }); // e.g., 10
   });
 
   app.put("/:id", async (req, res) => {
