@@ -14,7 +14,8 @@ const createAgreementRouter = (db) => {
     }
   });
 
-  app.get("/agreements/:email", async (req, res) => {
+  // get agreement by email
+  app.get("/:email", async (req, res) => {
     const { email } = req.params;
 
     if (!email || !email.includes("@")) {
@@ -24,7 +25,7 @@ const createAgreementRouter = (db) => {
     try {
       const agreement = await db
         .collection("agreements")
-        .findOne({ userEmail: email });
+        .findOne({ email });
       if (!agreement) {
         return res
           .status(404)
@@ -36,20 +37,18 @@ const createAgreementRouter = (db) => {
       console.error(error);
       res
         .status(500)
-        .json({ success: false, message: "Failed to fetch agreement" });
+        .json({ success: false, message: "Failed to get agreement" });
     }
   });
 
-  // POST /agreements - create a new agreement request
+  // create a new agreement request
   app.post("/", async (req, res) => {
     try {
-      const db = req.app.locals.db;
       const agreement = req.body;
 
       // Check if the user already applied for this apartment
-      const existingAgreement = await db.collection("agreements").findOne({
-        email: agreement.email,
-      });
+      const existingAgreement = await db.collection("agreements").
+      findOne({email});
 
       if (existingAgreement) {
         return res.send({
@@ -76,6 +75,7 @@ const createAgreementRouter = (db) => {
         createdAt: new Date(),
       });
 
+      // update apartment hasAgreement flag
       await db.collection("apartments").updateOne(
         {
           apartmentNo: agreement.apartmentNo,
