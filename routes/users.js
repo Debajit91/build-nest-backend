@@ -13,6 +13,25 @@ function createUserRouter(db) {
     }
   });
 
+  // GET role by email
+  app.get("/role/:email", async (req, res) => {
+    const { email } = req.params;
+
+    if (!email || typeof email !== 'string' || !email.includes("@")) {
+    return res.status(400).json({ success: false, message: "Invalid email format", role: null });
+  }
+
+    try {
+      const user = await db.collection("users").findOne({ email });
+      if (!user) return res.status(404).json({success: false, role: null });
+
+      res.json({success: true, role: user.role });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ role: null });
+    }
+  });
+
   // POST user — Create only if not exists
   app.post("/", async (req, res) => {
     const user = req.body;
@@ -34,7 +53,7 @@ function createUserRouter(db) {
       // Assign role and createdAt timestamp
       const newUser = {
         ...user,
-        role: "member", // default role
+        role: "user", // default role
         createdAt: new Date(), // timestamp
       };
 
