@@ -34,5 +34,27 @@ module.exports = (db) => {
     }
   });
 
+  
+  router.post("/announcements", async (req, res) => {
+    const db = req.app.locals.db;
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).send({ error: "Title and description required" });
+    }
+
+    try {
+      const result = await db.collection("announcements").insertOne({
+        title,
+        description,
+        createdAt: new Date(),
+      });
+      res.send({ insertedId: result.insertedId });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ error: "Failed to create announcement" });
+    }
+  });
+
   return router;
 };

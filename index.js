@@ -7,7 +7,7 @@ const createUserRouter = require("./routes/users");
 const createApartmentRouter = require("./routes/apartments");
 const createAgreementRouter = require("./routes/agreements");
 const createAdminRouter = require("./routes/admin");
-
+const createAnnouncementRouter = require("./routes/announcements");
 
 
 dotenv.config();
@@ -43,6 +43,7 @@ async function start() {
     app.use("/agreements", createAgreementRouter(db));
 
     app.use("/admin", createAdminRouter(db));
+    app.use("/announcements", createAnnouncementRouter(db));
 
     app.use("/api", require("./routes/payments"));
 
