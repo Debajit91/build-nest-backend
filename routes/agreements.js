@@ -1,4 +1,5 @@
 const express = require("express");
+const { ObjectId } = require("mongodb");
 const app = express.Router();
 
 const createAgreementRouter = (db) => {
@@ -14,6 +15,21 @@ const createAgreementRouter = (db) => {
     }
   });
 
+  app.get("/requests", async (req, res) => {
+    try {
+      const requests = await db
+        .collection("agreements")
+        .find({ status: "pending" })
+        .toArray();
+      res.json({ success: true, data: requests });
+    } catch (error) {
+      console.error("Error fetching requests:", error);
+      res
+        .status(500)
+        .json({ success: false, message: "Failed to fetch requests" });
+    }
+  });
+
   // get agreement by email
   app.get("/:email", async (req, res) => {
     const { email } = req.params;
@@ -23,9 +39,7 @@ const createAgreementRouter = (db) => {
     }
 
     try {
-      const agreement = await db
-        .collection("agreements")
-        .findOne({ email });
+      const agreement = await db.collection("agreements").findOne({ email });
       if (!agreement) {
         return res
           .status(404)
@@ -46,9 +60,20 @@ const createAgreementRouter = (db) => {
     try {
       const agreement = req.body;
 
-      // Check if the user already applied for this apartment
-      const existingAgreement = await db.collection("agreements").
-      findOne({email});
+      const user = await db
+        .collection("users")
+        .findOne({ email: agreement.email });
+
+      const existingAgreement = await db.collection("agreements").findOne({
+        email: agreement.email,
+        $or: [
+          { status: "pending" },
+          {
+            status: "checked",
+            acceptedAt: { $exists: true },
+          },
+        ],
+      });
 
       if (existingAgreement) {
         return res.send({
@@ -59,6 +84,8 @@ const createAgreementRouter = (db) => {
 
       const apartmentTaken = await db.collection("agreements").findOne({
         apartmentNo: agreement.apartmentNo,
+        status: "checked",
+        acceptedAt: { $exists: true },
       });
 
       if (apartmentTaken) {
@@ -75,7 +102,7 @@ const createAgreementRouter = (db) => {
         createdAt: new Date(),
       });
 
-      // update apartment hasAgreement flag
+      // add hasAgreement flag
       await db.collection("apartments").updateOne(
         {
           apartmentNo: agreement.apartmentNo,
@@ -91,6 +118,77 @@ const createAgreementRouter = (db) => {
       res.status(500).send({ error: "Internal server error" });
     }
   });
+
+  // PATCH /agreements/:id
+  app.patch("/agreements/:id", async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    try {
+      const result = await db
+        .collection("agreements")
+        .updateOne({ _id: new ObjectId(id) }, { $set: { status } });
+
+      res.send({ modifiedCount: result.modifiedCount });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ error: "Failed to update status" });
+    }
+  });
+
+  // PATCH /agreements/:id/decision
+  app.patch("/requests/:id/decision", async (req, res) => {
+    const { id } = req.params;
+    const { action, userEmail } = req.body;
+    const agreement = await db
+      .collection("agreements")
+      .findOne({ _id: new ObjectId(id) });
+
+    if (!["accept", "reject"].includes(action)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid action type" });
+    }
+
+    try {
+      const filter = { _id: new ObjectId(id) };
+
+      const update = {
+        $set: {
+          status: "checked",
+        },
+      };
+
+      if (action === "accept") {
+        update.$set.acceptedAt = new Date();
+
+        await db
+          .collection("users")
+          .updateOne({ email: userEmail }, { $set: { role: "member" } });
+      }
+
+      if (action === "reject") {
+        update.$set.rejectedAt = new Date();
+
+        if (agreement?.apartmentNo) {
+          await db
+            .collection("apartments")
+            .updateOne(
+              { apartmentNo: agreement.apartmentNo },
+              { $set: { hasAgreement: false } }
+            );
+        }
+      }
+
+      await db.collection("agreements").updateOne(filter, update);
+
+      res.json({ success: true, message: "Agreement updated" });
+    } catch (error) {
+      console.error("Error updating agreement:", error);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+
   return app;
 };
 module.exports = createAgreementRouter;
