@@ -8,7 +8,7 @@ const createApartmentRouter = require("./routes/apartments");
 const createAgreementRouter = require("./routes/agreements");
 const createAdminRouter = require("./routes/admin");
 const createAnnouncementRouter = require("./routes/announcements");
-
+const createPaymentsRouter = require("./routes/payments");
 
 dotenv.config();
 
@@ -32,7 +32,6 @@ async function start() {
     const db = client.db("buildNest");
     app.locals.db = db;
 
-
     // routes
     app.use("/coupons", createCouponRouter(db));
 
@@ -45,9 +44,11 @@ async function start() {
     app.use("/admin", createAdminRouter(db));
     app.use("/announcements", createAnnouncementRouter(db));
 
-    app.use("/api", require("./routes/payments"));
+    app.use("/payments", createPaymentsRouter(db));
 
-    app.listen(5000, () => {
+    
+
+    app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
   } catch (err) {

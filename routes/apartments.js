@@ -1,7 +1,9 @@
+const verifyToken = require("../Middleware/verifyToken");
+
 const createApartmentRouter = (db) => {
   const app = require("express").Router();
 
-  app.get("/", async (req, res) => {
+  app.get("/",   async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 6;
     const minRent = parseInt(req.query.minRent) || 0;

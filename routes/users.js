@@ -1,11 +1,12 @@
 const express = require("express");
 const { ObjectId } = require("mongodb");
+const verifyToken = require("../Middleware/verifyToken");
 
 function createUserRouter(db) {
   const app = express.Router();
 
   // GET all users
-  app.get("/", async (req, res) => {
+  app.get("/",  async (req, res) => {
     try {
       const users = await db.collection("users").find().toArray();
       res.send(users);
@@ -15,7 +16,7 @@ function createUserRouter(db) {
   });
 
   // GET role by email
-  app.get("/role/:email", async (req, res) => {
+  app.get("/role/:email",  async (req, res) => {
     const { email } = req.params;
 
     if (!email || typeof email !== "string" || !email.includes("@")) {
@@ -35,7 +36,7 @@ function createUserRouter(db) {
     }
   });
 
-  app.get("/members", async (req, res) => {
+  app.get("/members",   async (req, res) => {
     try {
       const members = await db
         .collection("users")
@@ -51,7 +52,7 @@ function createUserRouter(db) {
   });
 
   // POST user — Create only if not exists
-  app.post("/", async (req, res) => {
+  app.post("/",  async (req, res) => {
     const user = req.body;
 
     if (!user || !user.email) {
@@ -84,7 +85,7 @@ function createUserRouter(db) {
     }
   });
 
-  app.patch("/remove-member/:id", async (req, res) => {
+  app.patch("/remove-member/:id",  async (req, res) => {
     const { id } = req.params;
     const { email } = req.body;
 

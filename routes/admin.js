@@ -1,9 +1,11 @@
 const express = require("express");
+const verifyToken = require("../Middleware/verifyToken");
+const requireRole = require("../Middleware/requireRole");
 
 module.exports = (db) => {
   const router = express.Router();
 
-  router.get("/stats", async (req, res) => {
+  router.get("/stats",   async (req, res) => {
     try {
       const totalRooms = await db.collection("apartments").countDocuments();
       const availableRooms = await db
@@ -35,7 +37,7 @@ module.exports = (db) => {
   });
 
   
-  router.post("/announcements", async (req, res) => {
+  router.post("/announcements",   async (req, res) => {
     const db = req.app.locals.db;
     const { title, description } = req.body;
 

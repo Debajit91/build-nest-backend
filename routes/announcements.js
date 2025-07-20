@@ -1,7 +1,8 @@
 const express = require("express");
+const verifyToken = require("../Middleware/verifyToken");
 const app = express.Router();
 
-app.get("/", async (req, res) => {
+app.get("/",  async (req, res) => {
   const db = req.app.locals.db;
   try {
     const announcements = await db.collection("announcements").find().sort({ createdAt: -1 }).toArray();

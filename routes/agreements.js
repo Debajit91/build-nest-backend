@@ -1,12 +1,14 @@
 const express = require("express");
 const { ObjectId } = require("mongodb");
-const app = express.Router();
+const verifyToken = require("../Middleware/verifyToken");
+const requireRole = require("../Middleware/requireRole");
+
 
 const createAgreementRouter = (db) => {
   const app = express.Router();
 
-  // GET all coupons
-  app.get("/", async (req, res) => {
+
+  app.get("/",   async (req, res) => {
     try {
       const agreements = await db.collection("agreements").find().toArray();
       res.send(agreements);
@@ -15,7 +17,7 @@ const createAgreementRouter = (db) => {
     }
   });
 
-  app.get("/requests", async (req, res) => {
+  app.get("/requests",  async (req, res) => {
     try {
       const requests = await db
         .collection("agreements")
@@ -31,7 +33,7 @@ const createAgreementRouter = (db) => {
   });
 
   // get agreement by email
-  app.get("/:email", async (req, res) => {
+  app.get("/:email",  async (req, res) => {
     const { email } = req.params;
 
     if (!email || !email.includes("@")) {
@@ -40,13 +42,19 @@ const createAgreementRouter = (db) => {
 
     try {
       const agreement = await db.collection("agreements").findOne({ email });
+      const user = await db.collection("users").findOne({ email });
       if (!agreement) {
         return res
           .status(404)
           .json({ success: false, message: "No agreement found" });
       }
 
-      res.json({ success: true, agreement });
+      res.json({ success: true,
+        agreement: {
+          ...agreement,
+          userId: user?._id?.toString() || null,
+        },
+       });
     } catch (error) {
       console.error(error);
       res
@@ -56,7 +64,7 @@ const createAgreementRouter = (db) => {
   });
 
   // create a new agreement request
-  app.post("/", async (req, res) => {
+  app.post("/",   async (req, res) => {
     try {
       const agreement = req.body;
 
@@ -120,7 +128,7 @@ const createAgreementRouter = (db) => {
   });
 
   // PATCH /agreements/:id
-  app.patch("/agreements/:id", async (req, res) => {
+  app.patch("/agreements/:id",  async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
@@ -137,7 +145,7 @@ const createAgreementRouter = (db) => {
   });
 
   // PATCH /agreements/:id/decision
-  app.patch("/requests/:id/decision", async (req, res) => {
+  app.patch("/requests/:id/decision",  async (req, res) => {
     const { id } = req.params;
     const { action, userEmail } = req.body;
     const agreement = await db

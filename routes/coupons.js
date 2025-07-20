@@ -1,11 +1,13 @@
 const express = require("express");
 const { ObjectId } = require("mongodb");
+const verifyToken = require("../Middleware/verifyToken");
+
 
 const createCouponRouter = (db) => {
   const app = express.Router();
 
   // GET all coupons
-  app.get("/", async (req, res) => {
+  app.get("/",   async (req, res) => {
     try {
       const coupons = await db.collection("coupons").find().toArray();
       res.send(coupons);
@@ -15,7 +17,7 @@ const createCouponRouter = (db) => {
   });
 
   // POST a new coupon
-  app.post("/", async (req, res) => {
+  app.post("/",  async (req, res) => {
     try {
       const { code, discount, description, expiresAt } = req.body;
       const result = await db.collection("coupons").insertOne({
@@ -31,7 +33,7 @@ const createCouponRouter = (db) => {
     }
   });
 
-  app.post("/validate-coupon", async (req, res) => {
+  app.post("/validate-coupon",  async (req, res) => {
     const { code } = req.body;
     const coupon = await db.collection("coupons").findOne({ code });
 
@@ -42,7 +44,7 @@ const createCouponRouter = (db) => {
     return res.json({ valid: true, discount: coupon.discount }); // e.g., 10
   });
 
-  app.put("/:id", async (req, res) => {
+  app.put("/:id",  async (req, res) => {
     const id = req.params.id;
     const { code, discount, description } = req.body;
     const result = await db.collection("coupons").updateOne(
@@ -58,7 +60,7 @@ const createCouponRouter = (db) => {
     res.send(result);
   });
 
-  app.delete("/:id", async (req, res) => {
+  app.delete("/:id", verifyToken, async (req, res) => {
     const id = req.params.id;
     const result = await db
       .collection("coupons")
