@@ -1,11 +1,32 @@
 const express = require("express");
-const verifyToken = require("../Middleware/verifyToken");
-const requireRole = require("../Middleware/requireRole");
+
 
 module.exports = (db) => {
-  const router = express.Router();
+  const app = express.Router();
 
-  router.get("/stats",   async (req, res) => {
+  app.use((req, res, next) => {
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "https://buildnest-d8c3f.web.app"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
+
+    // Handle preflight requests
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+
+    next(); // continue to next route
+  });
+
+  app.get("/stats", async (req, res) => {
     try {
       const totalRooms = await db.collection("apartments").countDocuments();
       const availableRooms = await db
@@ -36,9 +57,8 @@ module.exports = (db) => {
     }
   });
 
-  
-  router.post("/announcements",   async (req, res) => {
-    const db = req.app.locals.db;
+  app.post("/announcements", async (req, res) => {
+    
     const { title, description } = req.body;
 
     if (!title || !description) {
@@ -58,5 +78,5 @@ module.exports = (db) => {
     }
   });
 
-  return router;
+  return app;
 };

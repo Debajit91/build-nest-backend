@@ -8,9 +8,9 @@ let db;
 
 async function connectToDatabase() {
   try {
-    await client.connect();
+    // await client.connect();
     db = client.db("buildNest"); // use your DB name
-    console.log("Connected to MongoDB Atlas");
+    // console.log("Connected to MongoDB Atlas");
   } catch (err) {
     console.error("MongoDB connection error:", err);
   }
