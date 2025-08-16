@@ -1,5 +1,5 @@
 const express = require("express");
-const verifyToken = require("../Middleware/verifyToken");
+// const verifyToken = require("../Middleware/verifyToken");
 const app = express.Router();
 
 app.get("/", async (req, res) => {

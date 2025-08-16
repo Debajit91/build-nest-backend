@@ -1,23 +1,23 @@
 const express = require("express");
 const { ObjectId } = require("mongodb");
-const verifyToken = require("../Middleware/verifyToken");
+// const verifyToken = require("../Middleware/verifyToken");
 
 
 const createCouponRouter = (db) => {
   const app = express.Router();
 
-  app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "https://buildnest-d8c3f.web.app");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  // app.use((req, res, next) => {
+  //   res.setHeader("Access-Control-Allow-Origin", "https://buildnest-d8c3f.web.app");
+  //   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  //   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-    // Handle preflight requests
-    if (req.method === "OPTIONS") {
-      return res.sendStatus(200);
-    }
+  //   // Handle preflight requests
+  //   if (req.method === "OPTIONS") {
+  //     return res.sendStatus(200);
+  //   }
 
-    next(); // continue to next route
-  });
+  //   next(); // continue to next route
+  // });
 
   // GET all coupons
   app.get("/",    async (req, res) => {
@@ -73,7 +73,7 @@ const createCouponRouter = (db) => {
     res.send(result);
   });
 
-  app.delete("/:id", verifyToken, async (req, res) => {
+  app.delete("/:id", async (req, res) => {
     const id = req.params.id;
     const result = await db
       .collection("coupons")
