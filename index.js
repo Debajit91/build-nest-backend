@@ -53,6 +53,8 @@ async function start() {
 
     app.use("/payments", createPaymentsRouter(db));
 
+    app.use("/stats", require("./routes/stats"));
+
     app.listen(port, () => {
       // console.log(`Server running on port ${port}`);
     });
